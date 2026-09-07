@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 import Link from 'next/link';
 import ContactForm from '@/components/ContactForm';
 
-let redis: any;
+let redis: any = null;
 
 async function getClient() {
   if (!redis) {
@@ -11,17 +11,17 @@ async function getClient() {
   return redis;
 }
 
-// Default data matching the original HTML content
+// Full default data exactly as originally designed
 const defaultData: any = {
   hero: {
     title: 'Empowering with Equality',
     slides: [
-      { image: '/assets/equity.jpg', alt: 'Community gathering in South Sudan' },
-      { image: '/assets/equity1.jpg', alt: 'ERA-SS field work' },
-      { image: '/assets/equity2.jpg', alt: 'ERA-SS community engagement' },
-      { image: '/assets/equity3.jpg', alt: 'ERA-SS program activity' },
-      { image: '/assets/equity4.jpg', alt: 'ERA-SS program activity' },
-      { image: '/assets/equity5.jpg', alt: 'ERA-SS program activity' },
+      { image: '/images/equity.jpg', alt: 'Community gathering in South Sudan' },
+      { image: '/images/equity1.jpg', alt: 'ERA-SS field work' },
+      { image: '/images/equity2.jpg', alt: 'ERA-SS community engagement' },
+      { image: '/images/equity3.jpg', alt: 'ERA-SS program activity' },
+      { image: '/images/equity4.jpg', alt: 'ERA-SS program activity' },
+      { image: '/images/equity5.jpg', alt: 'ERA-SS program activity' },
     ],
   },
   aboutCta: {
@@ -46,7 +46,7 @@ const defaultData: any = {
     title: 'Who We Are',
     paragraph1: 'Equity Resource Aid (ERA) is a non-profit national non-governmental organization founded and registered with the Relief and Rehabilitation Commission (RRC) of the Republic of South Sudan on 10th June 2026. We are geared towards building an equitable society in all aspects of life. Together with national and international partners, we respond to humanitarian crises and support long-term solutions that empower and improve the living conditions for the neediest neglected people.',
     paragraph2: 'ERA was founded to ensure that the voices and needs of communities are heard, responded to, and changed through equitable redistribution of resources for all, especially the most underprivileged segments of society. As an impact-oriented & human-centered organization, we use innovative evidence and data-driven decision-making to contribute to a just and equal world.',
-    image: '/assets/equity.jpg',
+    image: '/images/equity.jpg',
   },
   visionMission: {
     visionTitle: 'Our Vision',
@@ -109,7 +109,7 @@ const defaultData: any = {
       { value: '7', label: 'SDGs' },
       { value: 'Nationwide', label: 'Reach' },
     ],
-    image: '/assets/equity1.jpg',
+    image: '/images/equity1.jpg',
   },
   programs: {
     subtitle: 'Programmatic Focus',
@@ -145,14 +145,14 @@ const defaultData: any = {
     title: 'Trusted Partners & Donors',
     description: 'We work with UN agencies, CSOs, foundations, and the Government of South Sudan to provide strategic support for vulnerable communities.',
     logos: [
-      { src: '/assets/partner11.png', alt: 'UNICEF' },
-      { src: '/assets/partner2.png', alt: 'UNHCR' },
-      { src: '/assets/partner3.png', alt: 'WFP' },
-      { src: '/assets/partner4.png', alt: 'UNDP' },
-      { src: '/assets/partner5.png', alt: 'WHO' },
-      { src: '/assets/partner6.png', alt: 'UNFPA' },
-      { src: '/assets/partner10.png', alt: 'GIZ' },
-      { src: '/assets/partner8.png', alt: 'USAID' },
+      { src: '/images/partner11.png', alt: 'UNICEF' },
+      { src: '/images/partner2.png', alt: 'UNHCR' },
+      { src: '/images/partner3.png', alt: 'WFP' },
+      { src: '/images/partner4.png', alt: 'UNDP' },
+      { src: '/images/partner5.png', alt: 'WHO' },
+      { src: '/images/partner6.png', alt: 'UNFPA' },
+      { src: '/images/partner10.png', alt: 'GIZ' },
+      { src: '/images/partner8.png', alt: 'USAID' },
     ],
   },
   faq: {
@@ -195,9 +195,17 @@ const defaultData: any = {
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const client = await getClient();
-  const raw = await client.get('era-homepage');
-  const data = raw ? { ...defaultData, ...JSON.parse(raw) } : defaultData;
+  let data = { ...defaultData };
+
+  try {
+    const client = await getClient();
+    const raw = await client.get('era-homepage');
+    if (raw) {
+      data = { ...defaultData, ...JSON.parse(raw) };
+    }
+  } catch (error) {
+    console.error('Redis connection failed, using default content:', error);
+  }
 
   const hero = data.hero;
   const aboutCta = data.aboutCta;
@@ -505,45 +513,43 @@ export default async function HomePage() {
       </section>
 
       {/* CONTACT */}
-<section className="section contact-section" id="contact">
-  <div className="container">
-    <div className="text-center" style={{ marginBottom: 48 }}>
-      <p className="section-subtitle"><i className="fas fa-phone-alt" style={{ marginRight: 6 }}></i>{contact.subtitle}</p>
-      <h2 className="section-title">{contact.title}</h2>
-      <p style={{ color: 'var(--text-muted)', maxWidth: 500, margin: '0 auto' }}>{contact.description}</p>
-    </div>
-    <div className="grid-2" style={{ alignItems: 'stretch' }}>
-      <div className="contact-info-card">
-        <h3 style={{ fontSize: '1.3rem', color: '#111', marginBottom: 6 }}>
-          <i className="fas fa-map-pin" style={{ color: 'var(--era-primary)', marginRight: 10 }}></i>Contact Information
-        </h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: 8 }}>We respond within 2 hours.</p>
-        {contact.infoItems.map((item: any, idx: number) => (
-          <div className="contact-info-item" key={idx}>
-            <div className="contact-info-icon"><i className={item.icon}></i></div>
-            <div>
-              <h4>{item.title}</h4>
-              {item.lines.map((line: string, i: number) => (
-                <p key={i}>{line}</p>
-              ))}
-            </div>
+      <section className="section contact-section" id="contact">
+        <div className="container">
+          <div className="text-center" style={{ marginBottom: 48 }}>
+            <p className="section-subtitle"><i className="fas fa-phone-alt" style={{ marginRight: 6 }}></i>{contact.subtitle}</p>
+            <h2 className="section-title">{contact.title}</h2>
+            <p style={{ color: 'var(--text-muted)', maxWidth: 500, margin: '0 auto' }}>{contact.description}</p>
           </div>
-        ))}
-        <div style={{ marginTop: 8, paddingTop: 12, borderTop: '1px solid #eee' }}>
-          <p style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: 8, color: '#111' }}>Follow Us</p>
-          {contact.socials.map((social: any, idx: number) => (
-            <a key={idx} href={social.url} target="_blank" className="social-icon-link" aria-label={social.platform}>
-              <i className={`fab fa-${social.platform.toLowerCase()}`}></i>
-            </a>
-          ))}
+          <div className="grid-2" style={{ alignItems: 'stretch' }}>
+            <div className="contact-info-card">
+              <h3 style={{ fontSize: '1.3rem', color: '#111', marginBottom: 6 }}>
+                <i className="fas fa-map-pin" style={{ color: 'var(--era-primary)', marginRight: 10 }}></i>Contact Information
+              </h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: 8 }}>We respond within 2 hours.</p>
+              {contact.infoItems.map((item: any, idx: number) => (
+                <div className="contact-info-item" key={idx}>
+                  <div className="contact-info-icon"><i className={item.icon}></i></div>
+                  <div>
+                    <h4>{item.title}</h4>
+                    {item.lines.map((line: string, i: number) => (
+                      <p key={i}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div style={{ marginTop: 8, paddingTop: 12, borderTop: '1px solid #eee' }}>
+                <p style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: 8, color: '#111' }}>Follow Us</p>
+                {contact.socials.map((social: any, idx: number) => (
+                  <a key={idx} href={social.url} target="_blank" className="social-icon-link" aria-label={social.platform}>
+                    <i className={`fab fa-${social.platform.toLowerCase()}`}></i>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <ContactForm />
+          </div>
         </div>
-      </div>
-
-      {/* Use the new ContactForm client component */}
-      <ContactForm />
-    </div>
-  </div>
-</section>
+      </section>
     </>
   );
 }
