@@ -96,7 +96,7 @@ export default function Header() {
         </div>
         <div className="top-bar-inner right">
           <Link href="/career" className="nav-link-top"><i className="fas fa-briefcase"></i> Career</Link>
-          <Link href="/report" className="nav-link-top"><i className="fas fa-file-alt"></i> Reports</Link>
+          <Link href="/reports" className="nav-link-top"><i className="fas fa-file-alt"></i> Reports</Link>
           <Link href="/team" className="nav-link-top"><i className="fas fa-users"></i> Team</Link>
           <Link href="/support" className="donate-btn">Donate</Link>
         </div>

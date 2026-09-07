@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-export default function AdminContactPage() {
+export default function AdminTeamPage() {
   const [data, setData] = useState<any>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -10,7 +10,7 @@ export default function AdminContactPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch('/api/contact-page')
+    fetch('/api/team')
       .then((res) => res.json())
       .then((json) => {
         setData(json);
@@ -20,12 +20,12 @@ export default function AdminContactPage() {
   }, []);
 
   const handleSave = async () => {
-    const res = await fetch('/api/contact-page', {
+    const res = await fetch('/api/team', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (res.ok) setMessage('Contact page updated successfully!');
+    if (res.ok) setMessage('Team page updated successfully!');
     else setMessage('Save failed.');
   };
 
@@ -78,7 +78,7 @@ export default function AdminContactPage() {
     }
   };
 
-  if (loading) return <div style={{ padding: 40 }}>Loading contact data…</div>;
+  if (loading) return <div style={{ padding: 40 }}>Loading team data…</div>;
   if (!data) return <div style={{ padding: 40 }}>Error loading data.</div>;
 
   const inputStyle: React.CSSProperties = {
@@ -103,11 +103,11 @@ export default function AdminContactPage() {
     marginBottom: 8,
   });
 
-  const tabs = ['hero', 'contactInfo', 'formSection', 'cta'];
+  const tabs = ['hero', 'intro', 'members', 'cta'];
 
   return (
     <div>
-      <h1 style={{ fontFamily: 'Archivo, sans-serif', marginBottom: 24 }}>Edit Contact Page</h1>
+      <h1 style={{ fontFamily: 'Archivo, sans-serif', marginBottom: 24 }}>Edit Team Page</h1>
       {message && <p style={{ color: message.includes('success') || message.includes('uploaded') ? 'green' : 'red', marginBottom: 16 }}>{message}</p>}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: 20 }}>
@@ -135,40 +135,50 @@ export default function AdminContactPage() {
         </div>
       )}
 
-      {/* CONTACT INFO */}
-      {activeTab === 'contactInfo' && (
+      {/* INTRO */}
+      {activeTab === 'intro' && (
         <div>
+          <label style={labelStyle}>Subtitle</label>
+          <input value={data.intro?.subtitle} onChange={(e) => updateField('intro', 'subtitle', e.target.value)} style={inputStyle} />
           <label style={labelStyle}>Title</label>
-          <input value={data.contactInfo?.title} onChange={(e) => updateField('contactInfo', 'title', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Response Note</label>
-          <input value={data.contactInfo?.responseNote} onChange={(e) => updateField('contactInfo', 'responseNote', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Address</label>
-          <input value={data.contactInfo?.address} onChange={(e) => updateField('contactInfo', 'address', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Phones (one per line)</label>
-          <textarea value={data.contactInfo?.phones?.join('\n')} onChange={(e) => updateField('contactInfo', 'phones', e.target.value.split('\n'))} rows={4} style={inputStyle} />
-          <label style={labelStyle}>Email</label>
-          <input value={data.contactInfo?.email} onChange={(e) => updateField('contactInfo', 'email', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Map Embed URL</label>
-          <input value={data.contactInfo?.mapEmbedUrl} onChange={(e) => updateField('contactInfo', 'mapEmbedUrl', e.target.value)} style={inputStyle} />
-          <h4>Social Links</h4>
-          {data.contactInfo?.socials?.map((social: any, idx: number) => (
-            <div key={idx} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
-              <input value={social.platform} onChange={(e) => handleArrayItemChange('contactInfo', 'socials', idx, 'platform', e.target.value)} placeholder="Platform (e.g., Facebook)" style={inputStyle} />
-              <input value={social.url} onChange={(e) => handleArrayItemChange('contactInfo', 'socials', idx, 'url', e.target.value)} placeholder="URL" style={inputStyle} />
-              <button onClick={() => handleArrayRemove('contactInfo', 'socials', idx)}>Remove</button>
-            </div>
-          ))}
-          <button onClick={() => handleArrayAdd('contactInfo', 'socials', { platform: '', url: '' })}>+ Add Social</button>
+          <input value={data.intro?.title} onChange={(e) => updateField('intro', 'title', e.target.value)} style={inputStyle} />
+          <label style={labelStyle}>Description</label>
+          <textarea value={data.intro?.description} onChange={(e) => updateField('intro', 'description', e.target.value)} rows={4} style={inputStyle} />
         </div>
       )}
 
-      {/* FORM SECTION */}
-      {activeTab === 'formSection' && (
+      {/* MEMBERS */}
+      {activeTab === 'members' && (
         <div>
-          <label style={labelStyle}>Subtitle</label>
-          <input value={data.formSection?.subtitle} onChange={(e) => updateField('formSection', 'subtitle', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Title</label>
-          <input value={data.formSection?.title} onChange={(e) => updateField('formSection', 'title', e.target.value)} style={inputStyle} />
+          <h4>Team Members</h4>
+          {data.members?.map((member: any, idx: number) => (
+            <div key={idx} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
+              <input value={member.initials} onChange={(e) => handleArrayItemChange('members', 'members', idx, 'initials', e.target.value)} placeholder="Initials" style={inputStyle} />
+              <input value={member.name} onChange={(e) => handleArrayItemChange('members', 'members', idx, 'name', e.target.value)} placeholder="Name" style={inputStyle} />
+              <input value={member.role} onChange={(e) => handleArrayItemChange('members', 'members', idx, 'role', e.target.value)} placeholder="Role" style={inputStyle} />
+              <textarea value={member.bio} onChange={(e) => handleArrayItemChange('members', 'members', idx, 'bio', e.target.value)} placeholder="Bio" rows={3} style={inputStyle} />
+              <label style={labelStyle}>Photo</label>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
+                <input value={member.photo || ''} onChange={(e) => handleArrayItemChange('members', 'members', idx, 'photo', e.target.value)} placeholder="Photo URL" style={{ ...inputStyle, flex: 1, marginBottom: 0 }} />
+                <input type="file" id={`member-photo-${idx}`} style={{ display: 'none' }} onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const formData = new FormData();
+                  formData.append('file', file);
+                  fetch('/api/upload', { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(result => {
+                      if (result.url) handleArrayItemChange('members', 'members', idx, 'photo', result.url);
+                      setMessage('Photo uploaded!');
+                    });
+                }} />
+                <button onClick={() => document.getElementById(`member-photo-${idx}`)?.click()} className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>Upload Photo</button>
+              </div>
+              {member.photo && <img src={member.photo} alt="Member" style={{ maxWidth: 100, marginBottom: 8, borderRadius: '50%' }} />}
+              <button onClick={() => handleArrayRemove('members', 'members', idx)}>Remove</button>
+            </div>
+          ))}
+          <button onClick={() => handleArrayAdd('members', 'members', { initials: '', name: '', role: '', bio: '', photo: '' })}>+ Add Member</button>
         </div>
       )}
 
@@ -183,7 +193,7 @@ export default function AdminContactPage() {
       )}
 
       <button onClick={handleSave} className="btn btn-primary" style={{ marginTop: 20, width: '100%', padding: 14, fontSize: 15 }}>
-        Save Contact Page
+        Save Team Page
       </button>
     </div>
   );

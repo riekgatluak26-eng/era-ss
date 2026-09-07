@@ -138,36 +138,137 @@ export default function AdminHomepagePage() {
       </div>
 
       {/* HERO */}
-      {activeTab === 'hero' && (
-        <div>
-          <label style={labelStyle}>Title</label>
-          <input value={data.hero?.title} onChange={(e) => updateField('hero', 'title', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Slides (images)</label>
-          {data.hero?.slides?.map((slide: any, idx: number) => (
-            <div key={idx} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
-              <input value={slide.image} onChange={(e) => handleArrayItemChange('hero', 'slides', idx, 'image', e.target.value)} placeholder="Image URL" style={{ ...inputStyle, flex: 1 }} />
-              <input value={slide.alt} onChange={(e) => handleArrayItemChange('hero', 'slides', idx, 'alt', e.target.value)} placeholder="Alt text" style={inputStyle} />
-              <button type="button" onClick={() => document.getElementById(`hero-image-${idx}`)?.click()} className="btn btn-primary" style={{ marginBottom: 8 }}>Upload Image</button>
-              <input type="file" id={`hero-image-${idx}`} style={{ display: 'none' }} onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const formData = new FormData();
-                formData.append('file', file);
-                fetch('/api/upload', { method: 'POST', body: formData })
-                  .then(res => res.json())
-                  .then(result => {
-                    if (result.url) handleArrayItemChange('hero', 'slides', idx, 'image', result.url);
-                    setMessage('Image uploaded!');
-                  });
-              }} />
-              {slide.image && <img src={slide.image} style={{ maxWidth: 200, marginBottom: 8 }} />}
-              <button onClick={() => handleArrayRemove('hero', 'slides', idx)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>Remove</button>
-            </div>
-          ))}
-          <button onClick={() => handleArrayAdd('hero', 'slides', { image: '', alt: '' })} className="btn btn-outline" style={{ marginTop: 8 }}>+ Add Slide</button>
-        </div>
-      )}
+{activeTab === 'hero' && (
+  <div>
+    <label style={labelStyle}>Title</label>
+    <input
+      value={data.hero?.title}
+      onChange={(e) => updateField('hero', 'title', e.target.value)}
+      style={inputStyle}
+    />
 
+    <label style={labelStyle}>Slides (images)</label>
+
+    {/* ── Add Photo button (uploads and adds new slide) ── */}
+    <div style={{ marginBottom: '16px' }}>
+      <input
+        type="file"
+        id="add-hero-photo"
+        style={{ display: 'none' }}
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          try {
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const result = await res.json();
+            if (result.url) {
+              // Add new slide with uploaded image
+              handleArrayAdd('hero', 'slides', { image: result.url, alt: '' });
+              setMessage('New slide added! Click Save to keep it.');
+            } else {
+              setMessage('Upload failed');
+            }
+          } catch {
+            setMessage('Upload failed');
+          }
+        }}
+      />
+      <button
+        type="button"
+        onClick={() => document.getElementById('add-hero-photo')?.click()}
+        style={{
+          background: 'var(--era-primary)',
+          color: '#fff',
+          border: 'none',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          fontWeight: 700,
+          cursor: 'pointer',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+      >
+        <i className="fas fa-plus"></i> Add Photo
+      </button>
+    </div>
+
+    {/* Existing slides list */}
+    {data.hero?.slides?.map((slide: any, idx: number) => (
+      <div key={idx} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
+        <input
+          value={slide.image}
+          onChange={(e) => handleArrayItemChange('hero', 'slides', idx, 'image', e.target.value)}
+          placeholder="Image URL"
+          style={{ ...inputStyle, flex: 1 }}
+        />
+        <input
+          value={slide.alt}
+          onChange={(e) => handleArrayItemChange('hero', 'slides', idx, 'alt', e.target.value)}
+          placeholder="Alt text"
+          style={inputStyle}
+        />
+        <button
+          type="button"
+          onClick={() => document.getElementById(`hero-image-${idx}`)?.click()}
+          className="btn btn-primary"
+          style={{ marginBottom: 8 }}
+        >
+          Upload Replacement
+        </button>
+        <input
+          type="file"
+          id={`hero-image-${idx}`}
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            fetch('/api/upload', { method: 'POST', body: formData })
+              .then((res) => res.json())
+              .then((result) => {
+                if (result.url) handleArrayItemChange('hero', 'slides', idx, 'image', result.url);
+                setMessage('Image updated!');
+              });
+          }}
+        />
+        {slide.image && <img src={slide.image} style={{ maxWidth: 200, marginBottom: 8 }} />}
+        <button
+          onClick={() => handleArrayRemove('hero', 'slides', idx)}
+          style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          Remove
+        </button>
+      </div>
+    ))}
+
+    {/* ── Old "+ Add Slide" button (visible and functional) ── */}
+    <button
+      onClick={() => handleArrayAdd('hero', 'slides', { image: '', alt: '' })}
+      className="btn btn-outline"
+      style={{
+        marginTop: 8,
+        borderColor: 'var(--era-primary)',
+        color: 'var(--era-primary)',
+        background: 'white',
+        padding: '10px 20px',
+        borderRadius: '8px',
+        fontWeight: 600,
+        cursor: 'pointer',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+      }}
+    >
+      <i className="fas fa-plus"></i> Add Slide
+    </button>
+  </div>
+)}
       {/* ABOUT CTA */}
       {activeTab === 'aboutCta' && (
         <div>

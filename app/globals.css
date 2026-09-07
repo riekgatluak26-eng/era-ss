@@ -2031,3 +2031,40 @@ a {
     font-size: 0.26rem !important;
   }
 }
+
+/* ============================================================
+   FIX: No gap between top bar and navbar on scroll
+   ============================================================ */
+
+/* Smooth transition for navbar position */
+.navbar {
+  transition: top 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* When the navbar is scrolled (top bar hidden), move it to the very top */
+.navbar.scrolled {
+  top: 0;
+}
+
+/* Adjust body padding accordingly to avoid content being hidden under the fixed navbar */
+body {
+  transition: padding-top 0.35s ease;
+}
+
+/* When the top bar is hidden, reduce body padding to only the navbar height */
+body:has(.top-bar.hidden) {
+  padding-top: 80px;  /* navbar height on desktop */
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  body:has(.top-bar.hidden) {
+    padding-top: 68px;  /* navbar height on tablet/mobile */
+  }
+}
+
+@media (max-width: 520px) {
+  body:has(.top-bar.hidden) {
+    padding-top: 60px;  /* navbar height on small phones */
+  }
+}

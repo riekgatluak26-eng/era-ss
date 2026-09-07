@@ -11,17 +11,22 @@ export default function Scripts() {
     const navbar = document.getElementById('navbar') as HTMLElement | null;
     const topBar = document.getElementById('topBar') as HTMLElement | null;
 
+    // Store reference so we can remove the exact same function later
+    let onScroll: (() => void) | null = null;
+
     if (navbar && topBar) {
-      const handleScroll = () => {
+      onScroll = () => {
         if (window.scrollY > 40) {
           navbar.classList.add('scrolled');
           topBar.classList.add('hidden');
+          document.body.classList.add('topbar-hidden'); // <-- fix gap
         } else {
           navbar.classList.remove('scrolled');
           topBar.classList.remove('hidden');
+          document.body.classList.remove('topbar-hidden'); // <-- fix gap
         }
       };
-      window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('scroll', onScroll, { passive: true });
     }
 
     // ---------- MOBILE MENU ----------
@@ -119,11 +124,6 @@ export default function Scripts() {
       }
 
       resetInterval();
-
-      // Cleanup
-      return () => {
-        if (slideInterval) clearInterval(slideInterval);
-      };
     }
 
     // ---------- SMOOTH SCROLL FOR ANCHOR LINKS ----------
@@ -182,10 +182,10 @@ export default function Scripts() {
       });
     });
 
-    // Cleanup event listeners on route change
+    // Cleanup on unmount
     return () => {
-      if (navbar && topBar) {
-        window.removeEventListener('scroll', () => {});
+      if (onScroll) {
+        window.removeEventListener('scroll', onScroll);
       }
       document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.removeEventListener('click', handleSmoothScroll);

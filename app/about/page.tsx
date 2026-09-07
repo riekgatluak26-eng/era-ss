@@ -10,325 +10,310 @@ async function getClient() {
   return redis;
 }
 
+// Default data exactly as the original About page
+const defaultData: any = {
+  hero: {
+    title: 'About ERA-SS',
+    subtitle: 'Our story, vision, and commitment to building an equitable South Sudan.',
+    backgroundImage: '/images/equity.jpg',
+  },
+  history: {
+    subtitle: 'Our Story',
+    title: 'Who We Are & How We Began',
+    paragraph1: 'Equity Resource Aid (ERA) is a non-profit national non-governmental organization founded and registered with the Relief and Rehabilitation Commission (RRC) of the Republic of South Sudan on 10th June 2026. We were established by a group of passionate South Sudanese professionals who saw the urgent need for a locally-led organization that could respond to the complex challenges facing our communities.',
+    paragraph2: 'ERA was born out of a vision to create a platform where the voices of the most vulnerable are heard, and where resources are distributed equitably. We believe that lasting change comes from within communities, and our work is rooted in participatory approaches that empower local actors.',
+    image: '/images/equity1.jpg',
+  },
+  visionMission: {
+    visionTitle: 'Our Vision',
+    visionText: 'Creating enabling opportunities for all people to achieve their needs, actively embracing continual social inclusion, change, and justice to take center stage in achieving optimum human development.',
+    missionTitle: 'Our Mission',
+    missionText: 'All citizens, regardless of their backgrounds, working together, uphold the peace and stability, and take the lead in fulfilling their talents and skills for a progressive change.',
+  },
+  coreValues: {
+    subtitle: 'What Drives Us',
+    title: 'Our Core Values',
+    values: [
+      { icon: 'fas fa-hand-holding-heart', title: 'Dignity', text: 'Every person deserves respect and inherent worth.' },
+      { icon: 'fas fa-globe-africa', title: 'Respect for All', text: 'Honouring diversity and uniqueness.' },
+      { icon: 'fas fa-balance-scale', title: 'Equality', text: 'Fair opportunities for everyone.' },
+      { icon: 'fas fa-clipboard-check', title: 'Accountability', text: 'Transparent and responsible stewardship.' },
+      { icon: 'fas fa-fire', title: 'Dedication', text: 'Unwavering commitment to our mission.' },
+      { icon: 'fas fa-wheelchair', title: 'Inclusion', text: 'Leaving no one behind.' },
+    ],
+  },
+  genesis: {
+    subtitle: 'Our Genesis',
+    title: 'Founded with Purpose',
+    description: 'ERA was established to fill a critical gap in locally-led development. Our foundational aims and strategic objectives guide everything we do.',
+    aimsTitle: '9 Foundational Aims',
+    objectivesTitle: '10 Strategic Objectives',
+    aims: [
+      'To empower, educate, and inspire children and all citizens for the importance of being responsible patriots.',
+      'To ensure that these people occupy the center stage in the development of South Sudan.',
+      'To prepare the mindsets of the people in line with national cohesion.',
+      'To unify all regions and enhance the values of national integration.',
+      'To serve as an entity for both inclusion and tolerance in the nation-building process.',
+      'To complement the government\'s efforts in making South Sudan a better place for all citizens.',
+      'To ensure multi-dimensional mobilizations for the nation\'s building and sustenance.',
+      'To promote the relevance of non-violence to children and young people across the country.',
+      'To raise awareness about environmental safety, gender-based violence, and good accessibility to health education.',
+    ],
+    objectives: [
+      'To develop mutual relation and brotherhood feelings in South Sudanese communities through peace building and reconciliation.',
+      'To launch awareness programs in peace building, education, health, community policing, hygiene & sanitation, civic education, human rights, gender and children\'s issues.',
+      'To work for creative youth activities and sports development for peace building and better security.',
+      'To carry out water, sanitation and hygiene programs among local populations especially those in need.',
+      'To cooperate in managing water schemes in its working areas.',
+      'To promote community well-being & reassurance through community security & community policing programs.',
+      'To enhance well-being of indigenous people by operating result-oriented programs for poverty alleviation.',
+      'To repair and maintain feeder roads in coordination with local structures of underserved communities.',
+      'To launch appropriate programs for women, children, elderly, helpless and disabled persons.',
+      'To implement, promote and support environmental conservation, food security, and economic stability.',
+    ],
+  },
+  whyEra: {
+    subtitle: 'The Context',
+    title: 'Why ERA Exists',
+    description: 'South Sudan continues to face immense challenges — poverty, conflict, food insecurity, climate shocks, limited education, gender inequality, and weak healthcare systems. ERA-SS was founded to ensure that the voices of communities are heard and that resources are distributed equitably.',
+    challenges: [
+      { icon: 'fas fa-fist-raised', title: 'Conflict & Displacement', text: 'Ongoing instability has displaced millions, fracturing communities and disrupting lives across the nation.' },
+      { icon: 'fas fa-utensils', title: 'Food Insecurity & Malnutrition', text: 'Millions face acute hunger due to conflict, droughts, floods, and disrupted agricultural cycles.' },
+      { icon: 'fas fa-book', title: 'Limited Access to Education', text: 'Many children and youth remain out of school, lacking quality learning opportunities and infrastructure.' },
+      { icon: 'fas fa-heartbeat', title: 'Poor Healthcare & WASH', text: 'Weak health systems and inadequate water, sanitation, and hygiene facilities endanger lives daily.' },
+      { icon: 'fas fa-venus-mars', title: 'Gender Inequality & GBV', text: 'Women and girls face systemic discrimination, limited rights, and high rates of gender-based violence.' },
+      { icon: 'fas fa-tree', title: 'Climate Change Impacts', text: 'Erratic weather, floods, and droughts threaten livelihoods, food production, and community resilience.' },
+    ],
+  },
+  transparency: {
+    subtitle: 'Commitment',
+    title: 'Transparency & Accountability',
+    description: 'We believe that trust is built on openness. Our stakeholders can count on us to be transparent in all our operations.',
+    text: 'ERA-SS adheres to the highest standards of financial management, program monitoring, and reporting. We regularly share our progress with donors, communities, and the government to ensure mutual accountability.',
+    commitments: [
+      'Regular financial audits by independent firms',
+      'Publicly available annual reports',
+      'Community feedback mechanisms',
+      'Zero tolerance for fraud and corruption',
+      'Compliant with RRC regulations',
+      'Protection of whistleblowers',
+      'Gender and inclusion-sensitive programming',
+      'Environmental sustainability in operations',
+    ],
+  },
+  sdgs: {
+    subtitle: 'Global Goals',
+    title: 'SDGs We Support',
+    description: 'Our work directly contributes to 7 Sustainable Development Goals, aligned with South Sudan\'s national priorities.',
+    items: [
+      { title: 'SDG 2 – Zero Hunger', text: 'Food security and sustainable agriculture.' },
+      { title: 'SDG 3 – Good Health', text: 'Health and well-being for all.' },
+      { title: 'SDG 4 – Quality Education', text: 'Inclusive and equitable education.' },
+      { title: 'SDG 5 – Gender Equality', text: 'Empower women and girls.' },
+      { title: 'SDG 6 – Clean Water', text: 'Water and sanitation for all.' },
+      { title: 'SDG 13 – Climate Action', text: 'Combat climate change impacts.' },
+      { title: 'SDG 16 – Peace, Justice', text: 'Promote peaceful and inclusive societies.' },
+    ],
+  },
+  cta: {
+    title: 'Be Part of the Change',
+    text: 'Join us in our mission to build an equitable South Sudan. Partner, volunteer, or donate to support our work.',
+  },
+};
+
 export const dynamic = 'force-dynamic';
 
 export default async function AboutPage() {
-  const client = await getClient();
-  const raw = await client.get('about');
-  const data: any = raw ? JSON.parse(raw) : null;
+  let data = { ...defaultData };
 
-  if (!data) return <div style={{ padding: 80, textAlign: 'center' }}>Error loading page</div>;
+  try {
+    const client = await getClient();
+    const raw = await client.get('era-about');
+    if (raw) {
+      data = { ...defaultData, ...JSON.parse(raw) };
+    }
+  } catch (error) {
+    console.error('Redis connection failed, using default content:', error);
+  }
 
-  const hero = data.hero || {};
-  const about = data.about || {};
-  const howWeWork = data.howWeWork || {};
-  const cta = data.callToAction || {};
-  // … keep the existing return ( … )
+  const hero = data.hero;
+  const history = data.history;
+  const visionMission = data.visionMission;
+  const coreValues = data.coreValues;
+  const genesis = data.genesis;
+  const whyEra = data.whyEra;
+  const transparency = data.transparency;
+  const sdgs = data.sdgs;
+  const cta = data.cta;
 
   return (
     <>
-      {/* … keep the existing JSX exactly as is */}
-      {/* ═══════════════ PAGE HERO ═══════════════ */}
-      <section
-        style={{
-          backgroundImage: `url(${hero.backgroundImage || '/images/fivein2.jpeg'})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          minHeight: '50vh',
-          display: 'flex',
-          alignItems: 'center',
-          position: 'relative',
-          color: 'white',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(135deg, rgba(15,23,42,0.85) 30%, rgba(15,23,42,0.6) 80%)',
-          }}
-        />
-        <div className="hero-content" style={{ position: 'relative', zIndex: 2, maxWidth: '780px', margin: '0 auto', textAlign: 'center' }}>
-          <span className="eyebrow" style={{ color: 'var(--primary-light)', marginBottom: '8px' }}>
-            {hero.eyebrow || 'About Us'}
-          </span>
-          <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: 'clamp(34px, 5vw, 56px)', marginBottom: '12px' }}>
-            {hero.title || 'About Five Investment Limited'}
-          </h1>
-          <p style={{ opacity: 0.9, fontSize: '17px' }}>
-            {hero.subtitle || 'Learn more about our story, values, and how we deliver excellence across multiple sectors.'}
-          </p>
+      {/* HERO */}
+      <section className="hero about-hero" style={{ backgroundImage: `url(${hero.backgroundImage})`, height: '70vh', minHeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+        <div className="slide-overlay" style={{ background: 'rgba(0,0,0,0.35)' }}></div>
+        <div className="container" style={{ position: 'relative', zIndex: 2, textAlign: 'center', color: '#fff' }}>
+          <h1 style={{ color: '#fff', fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>{hero.title}</h1>
+          <p style={{ fontSize: '1.2rem', maxWidth: 600, margin: '10px auto 0', opacity: 0.9, textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>{hero.subtitle}</p>
         </div>
       </section>
 
-      {/* ═══════════════ ABOUT SECTION (Story, Vision, Mission, Values) ═══════════════ */}
-      <section id="about" className="section-light">
-        <div className="grid-2">
-          {/* Left Column: Text & Cards */}
-          <div className="reveal">
-            <span className="eyebrow">{about.eyebrow || 'Our Story'}</span>
-            <h2 className="section-title">{about.title || 'A Proudly South Sudanese Enterprise'}</h2>
-
-            {/* Incorporation Date */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'var(--primary)',
-              color: 'white',
-              padding: '8px 20px',
-              borderRadius: '999px',
-              fontSize: '13px',
-              fontWeight: 600,
-              marginBottom: '24px',
-              boxShadow: '0 4px 12px rgba(217,119,6,0.3)',
-            }}>
-              <i className="fa-regular fa-calendar"></i> Incorporated on {about.incorporationDate || '17th October 2013'}
-            </div>
-
-            {/* Background & Profile Card */}
-            <div className="card" style={{ borderLeft: '4px solid var(--primary)', marginBottom: '24px' }}>
-              <h4 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '20px', color: 'var(--navy)', marginBottom: '12px' }}>
-                Background &amp; Profile
-              </h4>
-              <p style={{ fontSize: '15px', lineHeight: '1.8', color: 'var(--text)' }}>
-                {about.backgroundText}
-              </p>
-              <div className="five-list" style={{ marginTop: '16px' }}>
-                {(about.fivePillars || []).map((item: string, idx: number) => (
-                  <span
-                    key={idx}
-                    style={{
-                      fontSize: '14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      gridColumn: idx === 4 ? 'span 2' : 'auto',
-                      padding: '4px 0',
-                    }}
-                  >
-                    <span style={{
-                      background: 'var(--primary)',
-                      color: 'white',
-                      width: '22px',
-                      height: '22px',
-                      borderRadius: '50%',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      flexShrink: 0,
-                    }}>
-                      {idx + 1}
-                    </span>
-                    {item}
-                  </span>
-                ))}
+      {/* HISTORY */}
+      <section id="history" className="section bg-white">
+        <div className="container">
+          <div className="grid-2" style={{ alignItems: 'center' }}>
+            <div>
+              <p className="section-subtitle"><i className="fas fa-history" style={{ marginRight: 6 }}></i>{history.subtitle}</p>
+              <h2 className="section-title">{history.title}</h2>
+              <div style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: 1.8 }}>
+                <p>{history.paragraph1}</p>
+              </div>
+              <div style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: 1.8, marginTop: 14 }}>
+                <p>{history.paragraph2}</p>
+              </div>
+              <div style={{ marginTop: 28, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                <Link href="#vision-mission" className="btn btn-primary"><i className="fas fa-eye" style={{ marginRight: 8 }}></i>Our Vision</Link>
+                <Link href="/contact" className="btn btn-secondary"><i className="fas fa-handshake" style={{ marginRight: 8 }}></i>Partner With Us</Link>
               </div>
             </div>
-
-            {/* Currently Engaged Pills */}
-            <div style={{
-              background: 'var(--primary)',
-              color: 'white',
-              borderRadius: 'var(--radius-md)',
-              padding: '16px 20px',
-              marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              flexWrap: 'wrap',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
-              <span style={{ fontWeight: 700, fontSize: '14px', letterSpacing: '0.5px' }}>⚡ Currently Engaged In:</span>
-              {(about.currentlyEngaged || []).map((item: string, idx: number) => (
-                <span
-                  key={idx}
-                  style={{
-                    background: 'rgba(255,255,255,0.2)',
-                    padding: '6px 16px',
-                    borderRadius: '999px',
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    backdropFilter: 'blur(4px)',
-                  }}
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-
-            {/* Motto Card */}
-            <div style={{
-              background: 'var(--navy)',
-              color: 'var(--gold)',
-              borderRadius: 'var(--radius-md)',
-              padding: '24px',
-              textAlign: 'center',
-              marginBottom: '24px',
-              boxShadow: 'var(--shadow-md)',
-            }}>
-              <span style={{ fontSize: '22px', fontWeight: 700, letterSpacing: '1px', display: 'block' }}>
-                &quot;{about.mottoText}&quot;
-              </span>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', marginTop: '8px', lineHeight: 1.6 }}>
-                {about.mottoDescription}
-              </p>
-            </div>
-
-            {/* Vision, Mission, Core Values Cards in a Grid */}
-            <div className="vision-grid">
-              <div className="card reveal text-center" style={{ borderTop: '4px solid var(--primary)' }}>
-                <span style={{ fontSize: '32px', display: 'block', marginBottom: '12px' }}>👁️</span>
-                <h5 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: '15px', color: 'var(--primary)', marginBottom: '8px' }}>
-                  Vision
-                </h5>
-                <p style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: 1.6 }}>{about.vision}</p>
-              </div>
-              <div className="card reveal text-center" style={{ borderTop: '4px solid var(--gold)' }}>
-                <span style={{ fontSize: '32px', display: 'block', marginBottom: '12px' }}>🎯</span>
-                <h5 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: '15px', color: 'var(--gold)', marginBottom: '8px' }}>
-                  Mission
-                </h5>
-                <p style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: 1.6 }}>{about.mission}</p>
-              </div>
-              <div className="card reveal text-center" style={{ borderTop: '4px solid var(--primary)' }}>
-                <span style={{ fontSize: '32px', display: 'block', marginBottom: '12px' }}>⭐</span>
-                <h5 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: '15px', color: 'var(--primary)', marginBottom: '8px' }}>
-                  Core Values
-                </h5>
-                <p style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: 1.6 }}>
-                  {(about.coreValues || []).join(' · ')}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Image + Stat Cards */}
-          <div className="reveal">
-            <div className="about-image-wrap" style={{ marginBottom: '24px' }}>
-              <img
-                src={about.image || '/images/about.jpg'}
-                alt="Five Investment Limited"
-                style={{ width: '100%', height: '400px', objectFit: 'cover' }}
-              />
-              <div className="img-footer">
-                <span><i className="fa-regular fa-building"></i> ESTABLISHED 2013</span>
-                <span><i className="fa-regular fa-location-dot"></i> GUDELE 2, JUBA</span>
-              </div>
-            </div>
-
-            {/* Core Values Pills */}
-            <div className="card" style={{ textAlign: 'center' }}>
-              <h4 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '18px', marginBottom: '16px', color: 'var(--navy)' }}>
-                Our Core Values
-              </h4>
-              <div className="values-wrap">
-                {(about.coreValues || []).map((val: string, idx: number) => (
-                  <span
-                    key={idx}
-                    className="reveal"
-                    style={{
-                      background: 'var(--light)',
-                      padding: '10px 20px',
-                      borderRadius: '999px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      boxShadow: 'var(--shadow-sm)',
-                      border: '1px solid var(--border)',
-                      transition: '0.3s',
-                    }}
-                  >
-                    <span style={{ fontSize: '18px' }}>
-                      {['🤝', '🏛️', '👥', '💬', '❤️'][idx]}
-                    </span>
-                    {val}
-                  </span>
-                ))}
-              </div>
+            <div>
+              <img src={history.image} alt="ERA-SS team in the field" style={{ borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-lg)', width: '100%' }} loading="lazy" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════════════ HOW WE WORK ═══════════════ */}
-      <section style={{ background: 'var(--light)' }}>
-        <div className="reveal" style={{ textAlign: 'center', marginBottom: '44px' }}>
-          <span className="eyebrow">{howWeWork.eyebrow || 'Our Process'}</span>
-          <h2 className="section-title">{howWeWork.title || 'How We Work'}</h2>
-          <p className="section-sub">{howWeWork.description}</p>
-        </div>
-        <div className="grid-4">
-          {(howWeWork.steps || []).map((step: any, idx: number) => (
-            <div
-              className="card reveal text-center"
-              key={idx}
-              style={{
-                position: 'relative',
-                borderTop: '4px solid var(--primary)',
-                transition: '0.3s ease',
-              }}
-            >
-              <div style={{
-                position: 'absolute',
-                top: '-16px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: 'var(--primary)',
-                color: 'white',
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 800,
-                fontSize: '14px',
-                boxShadow: '0 4px 12px rgba(217,119,6,0.4)',
-              }}>
-                {idx + 1}
-              </div>
-              <span style={{ fontSize: '36px', display: 'block', marginTop: '16px', marginBottom: '12px' }}>
-                {step.icon}
-              </span>
-              <h4 style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 700, fontSize: '18px', marginBottom: '8px', color: 'var(--navy)' }}>
-                {step.title}
-              </h4>
-              <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: 1.6 }}>
-                {step.text}
-              </p>
+      {/* VISION & MISSION */}
+      <section id="vision-mission" className="section bg-light">
+        <div className="container">
+          <div className="grid-2">
+            <div className="card" style={{ borderLeft: '5px solid var(--era-primary)', padding: '32px 28px' }}>
+              <h3 style={{ color: 'var(--era-primary)', fontSize: '1.4rem' }}><i className="fas fa-eye" style={{ marginRight: 10 }}></i>{visionMission.visionTitle}</h3>
+              <p style={{ fontSize: '1.1rem', marginTop: 10, lineHeight: 1.7 }}>{visionMission.visionText}</p>
             </div>
-          ))}
+            <div className="card" style={{ borderLeft: '5px solid var(--era-secondary)', padding: '32px 28px' }}>
+              <h3 style={{ color: 'var(--era-primary)', fontSize: '1.4rem' }}><i className="fas fa-bullseye" style={{ marginRight: 10 }}></i>{visionMission.missionTitle}</h3>
+              <p style={{ fontSize: '1.1rem', marginTop: 10, lineHeight: 1.7 }}>{visionMission.missionText}</p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ═══════════════ CALL TO ACTION ═══════════════ */}
-      <section
-        className="section-dark"
-        style={{
-          textAlign: 'center',
-          padding: '80px 30px',
-          backgroundImage: 'linear-gradient(135deg, var(--navy), #0a0f1a)',
-        }}
-      >
-        <div className="reveal">
-          <h2 className="section-title" style={{ color: 'white', marginBottom: '16px' }}>
-            {cta.text || 'Ready to Build the Future?'}
-          </h2>
-          <p style={{ color: 'rgba(255,255,255,0.7)', maxWidth: '500px', margin: '0 auto 30px', fontSize: '16px' }}>
-            Partner with Five Investment Limited for reliable, honest, and innovative solutions across South Sudan.
+      {/* CORE VALUES */}
+      <section id="core-values" className="section bg-white">
+        <div className="container text-center">
+          <p className="section-subtitle"><i className="fas fa-star" style={{ marginRight: 6 }}></i>{coreValues.subtitle}</p>
+          <h2 className="section-title">{coreValues.title}</h2>
+          <div className="grid-3" style={{ marginTop: 40 }}>
+            {coreValues.values.map((value: any, idx: number) => (
+              <div className="value-card" key={idx}>
+                <span className="icon-wrap"><i className={value.icon}></i></span>
+                <h3>{value.title}</h3>
+                <p style={{ fontSize: '0.95rem' }}>{value.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GENESIS (Aims & Objectives) */}
+      <section id="genesis" className="section bg-light">
+        <div className="container">
+          <div className="text-center" style={{ marginBottom: 48 }}>
+            <p className="section-subtitle"><i className="fas fa-seedling" style={{ marginRight: 6 }}></i>{genesis.subtitle}</p>
+            <h2 className="section-title">{genesis.title}</h2>
+            <p style={{ maxWidth: 700, margin: '0 auto', color: 'var(--text-muted)' }}>{genesis.description}</p>
+          </div>
+          <div className="grid-2" style={{ alignItems: 'stretch' }}>
+            <div className="card" style={{ padding: '28px 24px' }}>
+              <h3 style={{ color: 'var(--era-primary)', marginBottom: 18 }}><i className="fas fa-flag-checkered" style={{ marginRight: 10 }}></i>{genesis.aimsTitle}</h3>
+              <ul style={{ listStyle: 'none', paddingLeft: 0, color: 'var(--text-muted)', lineHeight: 2.2 }}>
+                {genesis.aims.map((aim: string, idx: number) => (
+                  <li key={idx}><i className="fas fa-check-circle" style={{ color: 'var(--era-primary)', marginRight: 10, fontSize: '0.85rem' }}></i>{aim}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="card" style={{ padding: '28px 24px' }}>
+              <h3 style={{ color: 'var(--era-primary)', marginBottom: 18 }}><i className="fas fa-list-check" style={{ marginRight: 10 }}></i>{genesis.objectivesTitle}</h3>
+              <ul style={{ listStyle: 'none', paddingLeft: 0, color: 'var(--text-muted)', lineHeight: 2.2 }}>
+                {genesis.objectives.map((obj: string, idx: number) => (
+                  <li key={idx}><i className="fas fa-check-circle" style={{ color: 'var(--era-primary)', marginRight: 10, fontSize: '0.85rem' }}></i>{obj}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY ERA EXISTS */}
+      <section id="why-era-exists" className="section why-era-section">
+        <div className="container">
+          <div className="text-center" style={{ marginBottom: 48 }}>
+            <p className="section-subtitle"><i className="fas fa-question-circle" style={{ marginRight: 6 }}></i>{whyEra.subtitle}</p>
+            <h2 className="section-title">{whyEra.title}</h2>
+            <p style={{ maxWidth: 700, margin: '0 auto', color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.7 }}>{whyEra.description}</p>
+          </div>
+          <div className="grid-3">
+            {whyEra.challenges.map((challenge: any, idx: number) => (
+              <div className="challenge-card" key={idx}>
+                <div className="challenge-icon"><i className={challenge.icon}></i></div>
+                <div>
+                  <h4>{challenge.title}</h4>
+                  <p>{challenge.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TRANSPARENCY & ACCOUNTABILITY */}
+      <section id="transparency" className="section bg-white">
+        <div className="container">
+          <div className="text-center" style={{ marginBottom: 48 }}>
+            <p className="section-subtitle"><i className="fas fa-balance-scale" style={{ marginRight: 6 }}></i>{transparency.subtitle}</p>
+            <h2 className="section-title">{transparency.title}</h2>
+            <p style={{ maxWidth: 700, margin: '0 auto', color: 'var(--text-muted)' }}>{transparency.description}</p>
+          </div>
+          <p style={{ maxWidth: 800, margin: '0 auto 24px', color: 'var(--text-muted)', fontSize: '1.05rem', textAlign: 'center' }}>
+            {transparency.text}
           </p>
-          <Link
-            href={cta.buttonLink || '/contact'}
-            className="btn-gold"
-            style={{ padding: '16px 40px', fontSize: '16px' }}
-          >
-            <i className="fa-regular fa-envelope"></i> {cta.buttonText || 'Contact Us Today'}
-          </Link>
+          <div className="grid-2" style={{ maxWidth: 800, margin: '0 auto' }}>
+            <div className="card" style={{ padding: '28px 24px' }}>
+              <h3 style={{ color: 'var(--era-primary)', marginBottom: 18 }}><i className="fas fa-check-circle" style={{ marginRight: 10 }}></i> Our Commitments</h3>
+              <ul style={{ listStyle: 'none', padding: 0, color: 'var(--text-muted)', lineHeight: 2.2 }}>
+                {transparency.commitments.map((item: string, idx: number) => (
+                  <li key={idx}><i className="fas fa-angle-right" style={{ color: 'var(--era-primary)', marginRight: 8 }}></i>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SDGs */}
+      <section id="sdgs" className="section bg-light">
+        <div className="container text-center">
+          <p className="section-subtitle"><i className="fas fa-globe" style={{ marginRight: 6 }}></i>{sdgs.subtitle}</p>
+          <h2 className="section-title">{sdgs.title}</h2>
+          <p style={{ maxWidth: 600, margin: '0 auto 30px', color: 'var(--text-muted)' }}>{sdgs.description}</p>
+          <div className="grid-3">
+            {sdgs.items.map((item: any, idx: number) => (
+              <div className="card" key={idx}>
+                <h4>{item.title}</h4>
+                <p>{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="cta-banner" style={{ background: 'var(--era-primary-dark)' }}>
+        <div className="container text-center">
+          <h2><i className="fas fa-handshake" style={{ marginRight: 12 }}></i>{cta.title}</h2>
+          <p>{cta.text}</p>
+          <Link href="/contact" className="btn btn-light"><i className="fas fa-arrow-right" style={{ marginRight: 8 }}></i>Get Involved</Link>
+          <Link href="/support" className="btn btn-outline-light"><i className="fas fa-heart" style={{ marginRight: 8 }}></i>Support Us</Link>
         </div>
       </section>
     </>

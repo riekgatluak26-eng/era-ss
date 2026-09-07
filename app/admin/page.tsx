@@ -7,18 +7,29 @@ export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
 
-    if (username === 'equity' && password === 'erass2026') {
-      // Store authentication flag
-      localStorage.setItem('admin-auth', 'true');
-      // Redirect to homepage admin
-      router.push('/admin/homepage');
-    } else {
-      setError('Invalid username or password. Please try again.');
+    try {
+      const res = await fetch('/api/admin-credentials');
+      if (!res.ok) throw new Error('Failed to load credentials');
+      const creds = await res.json();
+
+      if (username === creds.username && password === creds.password) {
+        localStorage.setItem('admin-auth', 'true');
+        router.push('/admin/homepage');
+      } else {
+        setError('Invalid username or password.');
+      }
+    } catch (err) {
+      setError('Authentication error. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,7 +56,6 @@ export default function AdminLoginPage() {
           textAlign: 'center',
         }}
       >
-        {/* Logo */}
         <div style={{ marginBottom: '24px' }}>
           <div
             style={{
@@ -80,7 +90,6 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
           <label style={labelStyle}>Username</label>
           <input
@@ -120,35 +129,23 @@ export default function AdminLoginPage() {
 
           <button
             type="submit"
+            disabled={loading}
             style={{
               width: '100%',
               padding: '14px',
-              background: 'var(--era-primary, #C62828)',
+              background: loading ? '#ccc' : 'var(--era-primary, #C62828)',
               color: '#fff',
               border: 'none',
               borderRadius: '8px',
               fontSize: '1rem',
               fontWeight: '700',
-              cursor: 'pointer',
-              transition: 'background 0.3s, transform 0.2s',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'background 0.3s',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = '#8B0000')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = '#C62828')}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-
-        {/* Footer note */}
-        <p
-          style={{
-            marginTop: '24px',
-            fontSize: '0.8rem',
-            color: '#999',
-          }}
-        >
-          Protected area – authorised personnel only.
-        </p>
       </div>
     </div>
   );

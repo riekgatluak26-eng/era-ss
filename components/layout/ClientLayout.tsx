@@ -24,7 +24,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         router.replace('/admin');
       }
     } else if (isAdmin && pathname === '/admin') {
-      // On login page, no auth check needed
       setIsAuthenticated(null);
     } else {
       setIsAuthenticated(null);
@@ -102,25 +101,23 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             </div>
           </div>
 
-          <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <Link
-              href="/admin/homepage"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                color: pathname === '/admin/homepage' ? '#F4A825' : 'rgba(255,255,255,0.75)',
-                background: pathname === '/admin/homepage' ? 'rgba(198,40,40,0.2)' : 'transparent',
-                fontWeight: pathname === '/admin/homepage' ? 700 : 500,
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-              }}
-            >
-              <span>🏠</span> Homepage
-            </Link>
-            {/* Additional admin pages will be added later */}
+          <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', overflowY: 'auto' }}>
+            {/* Existing admin pages */}
+            <SidebarLink href="/admin/homepage" label="Homepage" icon="🏠" currentPath={pathname} />
+            <SidebarLink href="/admin/about" label="About" icon="📖" currentPath={pathname} />
+
+            {/* Placeholder links for future admin pages (add later) */}
+            <SidebarLink href="/admin/programs" label="Programs" icon="🎯" currentPath={pathname} />
+            <SidebarLink href="/admin/approach" label="Approach" icon="💡" currentPath={pathname} />
+            <SidebarLink href="/admin/coverage" label="Coverage" icon="🗺️" currentPath={pathname} />
+            <SidebarLink href="/admin/partners" label="Partners" icon="🤝" currentPath={pathname} />
+            <SidebarLink href="/admin/team" label="Team" icon="👥" currentPath={pathname} />
+            <SidebarLink href="/admin/faq" label="FAQ" icon="❓" currentPath={pathname} />
+            <SidebarLink href="/admin/support" label="Support" icon="❤️" currentPath={pathname} />
+            <SidebarLink href="/admin/contact" label="Contact" icon="✉️" currentPath={pathname} />
+            <SidebarLink href="/admin/career" label="Career" icon="💼" currentPath={pathname} />
+            <SidebarLink href="/admin/reports" label="Reports" icon="📄" currentPath={pathname} />
+            <SidebarLink href="/admin/settings" label="Settings" icon="⚙️" currentPath={pathname} />
           </nav>
 
           <button
@@ -158,5 +155,39 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <main>{children}</main>
       <Footer />
     </>
+  );
+}
+
+// Helper component for sidebar links
+function SidebarLink({
+  href,
+  label,
+  icon,
+  currentPath,
+}: {
+  href: string;
+  label: string;
+  icon: string;
+  currentPath: string;
+}) {
+  const isActive = currentPath === href;
+  return (
+    <Link
+      href={href}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        padding: '12px 16px',
+        borderRadius: '8px',
+        color: isActive ? '#F4A825' : 'rgba(255,255,255,0.75)',
+        background: isActive ? 'rgba(198,40,40,0.2)' : 'transparent',
+        fontWeight: isActive ? 700 : 500,
+        textDecoration: 'none',
+        transition: 'all 0.2s',
+      }}
+    >
+      <span>{icon}</span> {label}
+    </Link>
   );
 }

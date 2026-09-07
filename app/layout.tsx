@@ -4,8 +4,8 @@ import ClientLayout from '@/components/layout/ClientLayout';
 import Scripts from '@/components/layout/Scripts';
 
 export const metadata: Metadata = {
-  title: 'Five Investment Limited | Building South Sudan Through Investment & Innovation',
-  description: '...',
+  title: 'ERA-SS | Empowering with Equality',
+  description: 'Equity Resource Aid – South Sudan (ERA) is a registered national NGO working in education, peacebuilding, livelihoods, WASH, health, youth empowerment, gender equality, and climate resilience.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

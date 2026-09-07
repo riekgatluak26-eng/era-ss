@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-export default function AdminContactPage() {
+export default function AdminFaqPage() {
   const [data, setData] = useState<any>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -10,7 +10,7 @@ export default function AdminContactPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch('/api/contact-page')
+    fetch('/api/faq')
       .then((res) => res.json())
       .then((json) => {
         setData(json);
@@ -20,12 +20,12 @@ export default function AdminContactPage() {
   }, []);
 
   const handleSave = async () => {
-    const res = await fetch('/api/contact-page', {
+    const res = await fetch('/api/faq', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (res.ok) setMessage('Contact page updated successfully!');
+    if (res.ok) setMessage('FAQ page updated successfully!');
     else setMessage('Save failed.');
   };
 
@@ -78,7 +78,7 @@ export default function AdminContactPage() {
     }
   };
 
-  if (loading) return <div style={{ padding: 40 }}>Loading contact data…</div>;
+  if (loading) return <div style={{ padding: 40 }}>Loading FAQ data…</div>;
   if (!data) return <div style={{ padding: 40 }}>Error loading data.</div>;
 
   const inputStyle: React.CSSProperties = {
@@ -103,11 +103,11 @@ export default function AdminContactPage() {
     marginBottom: 8,
   });
 
-  const tabs = ['hero', 'contactInfo', 'formSection', 'cta'];
+  const tabs = ['hero', 'faqContent', 'resources', 'getInTouch', 'cta'];
 
   return (
     <div>
-      <h1 style={{ fontFamily: 'Archivo, sans-serif', marginBottom: 24 }}>Edit Contact Page</h1>
+      <h1 style={{ fontFamily: 'Archivo, sans-serif', marginBottom: 24 }}>Edit FAQ Page</h1>
       {message && <p style={{ color: message.includes('success') || message.includes('uploaded') ? 'green' : 'red', marginBottom: 16 }}>{message}</p>}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: 20 }}>
@@ -135,40 +135,68 @@ export default function AdminContactPage() {
         </div>
       )}
 
-      {/* CONTACT INFO */}
-      {activeTab === 'contactInfo' && (
+      {/* FAQ CONTENT */}
+      {activeTab === 'faqContent' && (
         <div>
+          <label style={labelStyle}>Subtitle</label>
+          <input value={data.faqContent?.subtitle} onChange={(e) => updateField('faqContent', 'subtitle', e.target.value)} style={inputStyle} />
           <label style={labelStyle}>Title</label>
-          <input value={data.contactInfo?.title} onChange={(e) => updateField('contactInfo', 'title', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Response Note</label>
-          <input value={data.contactInfo?.responseNote} onChange={(e) => updateField('contactInfo', 'responseNote', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Address</label>
-          <input value={data.contactInfo?.address} onChange={(e) => updateField('contactInfo', 'address', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Phones (one per line)</label>
-          <textarea value={data.contactInfo?.phones?.join('\n')} onChange={(e) => updateField('contactInfo', 'phones', e.target.value.split('\n'))} rows={4} style={inputStyle} />
-          <label style={labelStyle}>Email</label>
-          <input value={data.contactInfo?.email} onChange={(e) => updateField('contactInfo', 'email', e.target.value)} style={inputStyle} />
-          <label style={labelStyle}>Map Embed URL</label>
-          <input value={data.contactInfo?.mapEmbedUrl} onChange={(e) => updateField('contactInfo', 'mapEmbedUrl', e.target.value)} style={inputStyle} />
-          <h4>Social Links</h4>
-          {data.contactInfo?.socials?.map((social: any, idx: number) => (
+          <input value={data.faqContent?.title} onChange={(e) => updateField('faqContent', 'title', e.target.value)} style={inputStyle} />
+          <label style={labelStyle}>Description</label>
+          <textarea value={data.faqContent?.description} onChange={(e) => updateField('faqContent', 'description', e.target.value)} rows={3} style={inputStyle} />
+          <h4>FAQ Items</h4>
+          {data.faqContent?.items?.map((item: any, idx: number) => (
             <div key={idx} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
-              <input value={social.platform} onChange={(e) => handleArrayItemChange('contactInfo', 'socials', idx, 'platform', e.target.value)} placeholder="Platform (e.g., Facebook)" style={inputStyle} />
-              <input value={social.url} onChange={(e) => handleArrayItemChange('contactInfo', 'socials', idx, 'url', e.target.value)} placeholder="URL" style={inputStyle} />
-              <button onClick={() => handleArrayRemove('contactInfo', 'socials', idx)}>Remove</button>
+              <input value={item.icon} onChange={(e) => handleArrayItemChange('faqContent', 'items', idx, 'icon', e.target.value)} placeholder="Icon class" style={inputStyle} />
+              <input value={item.question} onChange={(e) => handleArrayItemChange('faqContent', 'items', idx, 'question', e.target.value)} placeholder="Question" style={inputStyle} />
+              <textarea value={item.answer} onChange={(e) => handleArrayItemChange('faqContent', 'items', idx, 'answer', e.target.value)} placeholder="Answer (HTML allowed)" rows={4} style={inputStyle} />
+              <button onClick={() => handleArrayRemove('faqContent', 'items', idx)}>Remove</button>
             </div>
           ))}
-          <button onClick={() => handleArrayAdd('contactInfo', 'socials', { platform: '', url: '' })}>+ Add Social</button>
+          <button onClick={() => handleArrayAdd('faqContent', 'items', { icon: '', question: '', answer: '' })}>+ Add FAQ</button>
         </div>
       )}
 
-      {/* FORM SECTION */}
-      {activeTab === 'formSection' && (
+      {/* RESOURCES */}
+      {activeTab === 'resources' && (
         <div>
           <label style={labelStyle}>Subtitle</label>
-          <input value={data.formSection?.subtitle} onChange={(e) => updateField('formSection', 'subtitle', e.target.value)} style={inputStyle} />
+          <input value={data.resources?.subtitle} onChange={(e) => updateField('resources', 'subtitle', e.target.value)} style={inputStyle} />
           <label style={labelStyle}>Title</label>
-          <input value={data.formSection?.title} onChange={(e) => updateField('formSection', 'title', e.target.value)} style={inputStyle} />
+          <input value={data.resources?.title} onChange={(e) => updateField('resources', 'title', e.target.value)} style={inputStyle} />
+          <label style={labelStyle}>Description</label>
+          <textarea value={data.resources?.description} onChange={(e) => updateField('resources', 'description', e.target.value)} rows={3} style={inputStyle} />
+          <h4>Resource Items</h4>
+          {data.resources?.items?.map((item: any, idx: number) => (
+            <div key={idx} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
+              <input value={item.icon} onChange={(e) => handleArrayItemChange('resources', 'items', idx, 'icon', e.target.value)} placeholder="Icon class" style={inputStyle} />
+              <input value={item.title} onChange={(e) => handleArrayItemChange('resources', 'items', idx, 'title', e.target.value)} placeholder="Title" style={inputStyle} />
+              <input value={item.text} onChange={(e) => handleArrayItemChange('resources', 'items', idx, 'text', e.target.value)} placeholder="Description" style={inputStyle} />
+              <input value={item.link} onChange={(e) => handleArrayItemChange('resources', 'items', idx, 'link', e.target.value)} placeholder="Link (e.g., /report)" style={inputStyle} />
+              <button onClick={() => handleArrayRemove('resources', 'items', idx)}>Remove</button>
+            </div>
+          ))}
+          <button onClick={() => handleArrayAdd('resources', 'items', { icon: '', title: '', text: '', link: '' })}>+ Add Resource</button>
+        </div>
+      )}
+
+      {/* GET IN TOUCH */}
+      {activeTab === 'getInTouch' && (
+        <div>
+          <label style={labelStyle}>Subtitle</label>
+          <input value={data.getInTouch?.subtitle} onChange={(e) => updateField('getInTouch', 'subtitle', e.target.value)} style={inputStyle} />
+          <label style={labelStyle}>Title</label>
+          <input value={data.getInTouch?.title} onChange={(e) => updateField('getInTouch', 'title', e.target.value)} style={inputStyle} />
+          <label style={labelStyle}>Description</label>
+          <textarea value={data.getInTouch?.description} onChange={(e) => updateField('getInTouch', 'description', e.target.value)} rows={3} style={inputStyle} />
+          <label style={labelStyle}>Email</label>
+          <input value={data.getInTouch?.email} onChange={(e) => updateField('getInTouch', 'email', e.target.value)} style={inputStyle} />
+          <label style={labelStyle}>Phones (one per line)</label>
+          <textarea value={data.getInTouch?.phones?.join('\n')} onChange={(e) => updateField('getInTouch', 'phones', e.target.value.split('\n'))} rows={3} style={inputStyle} />
+          <label style={labelStyle}>Address</label>
+          <input value={data.getInTouch?.address} onChange={(e) => updateField('getInTouch', 'address', e.target.value)} style={inputStyle} />
+          <label style={labelStyle}>Response Note</label>
+          <input value={data.getInTouch?.responseNote} onChange={(e) => updateField('getInTouch', 'responseNote', e.target.value)} style={inputStyle} />
         </div>
       )}
 
@@ -183,7 +211,7 @@ export default function AdminContactPage() {
       )}
 
       <button onClick={handleSave} className="btn btn-primary" style={{ marginTop: 20, width: '100%', padding: 14, fontSize: 15 }}>
-        Save Contact Page
+        Save FAQ Page
       </button>
     </div>
   );
