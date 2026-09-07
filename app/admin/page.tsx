@@ -4,19 +4,21 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLoginPage() {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'admin123') {
-      // Store authentication flag in localStorage
+
+    if (username === 'equity' && password === 'erass2026') {
+      // Store authentication flag
       localStorage.setItem('admin-auth', 'true');
-      // Redirect to the hero editor (or dashboard)
-      router.push('/admin/hero');
+      // Redirect to homepage admin
+      router.push('/admin/homepage');
     } else {
-      setError('Incorrect password');
+      setError('Invalid username or password. Please try again.');
     }
   };
 
@@ -27,55 +29,147 @@ export default function AdminLoginPage() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: '#f1f5f9',
+        background: '#f5f5f5',
+        fontFamily: 'Archivo, sans-serif',
+        padding: '20px',
       }}
     >
-      <form
-        onSubmit={handleSubmit}
+      <div
         style={{
-          background: 'white',
-          padding: '40px',
-          borderRadius: '16px',
+          background: '#fff',
+          borderRadius: '24px',
           boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
-          width: '350px',
+          width: '100%',
+          maxWidth: '420px',
+          padding: '40px 32px',
           textAlign: 'center',
         }}
       >
-        <h2 style={{ fontFamily: 'DM Serif Display, serif', marginBottom: '20px', color: 'var(--navy)' }}>
-          Admin Login
-        </h2>
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+        {/* Logo */}
+        <div style={{ marginBottom: '24px' }}>
+          <div
+            style={{
+              width: '70px',
+              height: '70px',
+              background: 'var(--era-primary, #C62828)',
+              color: '#fff',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '2rem',
+              fontWeight: '800',
+              margin: '0 auto',
+            }}
+          >
+            E
+          </div>
+          <h1
+            style={{
+              marginTop: '16px',
+              fontSize: '1.8rem',
+              fontWeight: '800',
+              color: '#111',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            ERA Admin Login
+          </h1>
+          <p style={{ color: '#777', fontSize: '0.95rem', marginTop: '4px' }}>
+            Sign in to manage the website
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
+          <label style={labelStyle}>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter username"
+            required
+            style={inputStyle}
+          />
+
+          <label style={labelStyle}>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter password"
+            required
+            style={inputStyle}
+          />
+
+          {error && (
+            <div
+              style={{
+                background: '#FEE2E2',
+                color: '#B91C1C',
+                padding: '12px 16px',
+                borderRadius: '8px',
+                fontSize: '0.9rem',
+                marginBottom: '16px',
+                fontWeight: '500',
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            style={{
+              width: '100%',
+              padding: '14px',
+              background: 'var(--era-primary, #C62828)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              fontWeight: '700',
+              cursor: 'pointer',
+              transition: 'background 0.3s, transform 0.2s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = '#8B0000')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = '#C62828')}
+          >
+            Login
+          </button>
+        </form>
+
+        {/* Footer note */}
+        <p
           style={{
-            width: '100%',
-            padding: '12px',
-            borderRadius: '8px',
-            border: '1px solid #e2e8f0',
-            marginBottom: '12px',
-            fontSize: '14px',
-          }}
-        />
-        {error && <p style={{ color: 'red', fontSize: '13px', marginBottom: '8px' }}>{error}</p>}
-        <button
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '12px',
-            background: 'var(--primary)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '999px',
-            fontWeight: 700,
-            cursor: 'pointer',
-            fontSize: '14px',
+            marginTop: '24px',
+            fontSize: '0.8rem',
+            color: '#999',
           }}
         >
-          Login
-        </button>
-      </form>
+          Protected area – authorised personnel only.
+        </p>
+      </div>
     </div>
   );
 }
+
+const labelStyle: React.CSSProperties = {
+  display: 'block',
+  marginBottom: '6px',
+  fontWeight: '600',
+  fontSize: '0.9rem',
+  color: '#333',
+};
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '12px 16px',
+  marginBottom: '20px',
+  borderRadius: '8px',
+  border: '2px solid #e5e7eb',
+  fontSize: '1rem',
+  fontFamily: 'Archivo, sans-serif',
+  transition: 'border-color 0.3s',
+  outline: 'none',
+};

@@ -3,82 +3,63 @@ import Link from 'next/link';
 export default function Footer() {
   return (
     <footer className="footer">
-      <div className="footer-grid">
-        {/* Column 1 – Company Info & Social */}
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-            <div className="logo-mark">
-              <i className="fa-solid fa-building"></i>
+      <div className="container">
+        <div className="footer-grid">
+          <div className="footer-col">
+            <div className="footer-logo">
+              <img src="/images/erass.jpeg" alt="ERA-SS Logo" className="footer-logo-img" />
+              <div className="footer-brand-wrapper">
+                <span className="footer-brand-name">ERA</span>
+                <span className="footer-brand-sub">EMPOWERING</span>
+                <span className="footer-brand-sub-line2">WITH EQUALITY</span>
+              </div>
             </div>
-            <span style={{ fontFamily: 'DM Serif Display, serif', fontSize: '20px' }}>
-              Five Investment
-            </span>
+            <p className="footer-description">
+              Registered national NGO, Republic of South Sudan. Committed to equitable development, peace, and resilience.
+            </p>
+            <div className="footer-socials">
+              <a href="https://www.facebook.com/people/Equity-Resource-Aid-South-Sudan/61590477338666/" target="_blank" className="footer-social-icon"><i className="fab fa-facebook-f"></i></a>
+              <a href="https://www.instagram.com/equityresourceaid?igsh=MTRuMzd4bTc2azZmZA==" target="_blank" className="footer-social-icon"><i className="fab fa-instagram"></i></a>
+              <a href="https://www.linkedin.com/in/equity-resource-aid-south-sudan-45a908414" target="_blank" className="footer-social-icon"><i className="fab fa-linkedin-in"></i></a>
+              <a href="https://wa.me/211928118089" target="_blank" className="footer-social-icon"><i className="fab fa-whatsapp"></i></a>
+            </div>
           </div>
-          <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: 1.7 }}>
-            A South Sudanese-owned company incorporated on 17th October 2013, dedicated to delivering
-            excellence across multiple sectors.
-          </p>
-          <p style={{ opacity: 0.6, fontSize: '13px', marginTop: '8px' }}>
-            Motto: Under Promise &amp; Over Deliver
-          </p>
-          <p style={{ opacity: 0.5, fontSize: '12px', marginTop: '4px' }}>
-            UNGM: 389997 | DU: 989994234
-          </p>
-          <div className="social-wrap">
-            <a
-              href="https://www.facebook.com/profile.php?id=100075841376066"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa-brands fa-facebook-f"></i>
-            </a>
+          <div className="footer-col">
+            <h4>Quick Links</h4>
+            <ul className="footer-links">
+              <li><Link href="/about">Who We Are</Link></li>
+              <li><Link href="/programs">Programs</Link></li>
+              <li><Link href="/approach">Our Approach</Link></li>
+              <li><Link href="/coverage">Coverage</Link></li>
+              <li><Link href="/faq">FAQ</Link></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Programs</h4>
+            <ul className="footer-links">
+              <li><Link href="/programs#education">Education</Link></li>
+              <li><Link href="/programs#livelihoods">Livelihoods</Link></li>
+              <li><Link href="/programs#peacebuilding">Peacebuilding</Link></li>
+              <li><Link href="/programs#youth">Youth Empowerment</Link></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Contact Us</h4>
+            <ul className="footer-contact-info">
+              <li><i className="fas fa-location-dot" style={{ width: '18px', color: 'var(--era-primary)' }}></i> Shirikat, Juba, South Sudan</li>
+              <li><i className="fas fa-phone" style={{ width: '18px', color: 'var(--era-primary)' }}></i> +211 928 118 089</li>
+              <li><i className="fas fa-phone" style={{ width: '18px', color: 'var(--era-primary)' }}></i> +211 927 757 777</li>
+              <li><i className="fas fa-envelope" style={{ width: '18px', color: 'var(--era-primary)' }}></i> <a href="mailto:info@era-ss.org">info@era-ss.org</a></li>
+            </ul>
           </div>
         </div>
-
-        {/* Column 2 – Quick Links */}
-        <div>
-          <h4>Quick Links</h4>
-          <ul>
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/about">About Us</Link></li>
-            <li><Link href="/investments">Investments</Link></li>
-            <li><Link href="/activities">Main Activities</Link></li>
-            <li><Link href="/services">Services</Link></li>
-            <li><Link href="/why-us">Why Choose Us</Link></li>
-            <li><Link href="/legal">Legal &amp; Certifications</Link></li>
-            <li><Link href="/contact">Contact Us</Link></li>
-          </ul>
+        <div className="footer-bottom">
+          <p>© 2026 Equity Resource Aid – South Sudan (ERA-SS). All rights reserved.</p>
+          <div className="footer-legal">
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms</a>
+          </div>
         </div>
-
-        {/* Column 3 – Our Services */}
-        <div>
-          <h4>Our Services</h4>
-          <ul>
-            <li><Link href="/services">Roads &amp; Bridges</Link></li>
-            <li><Link href="/services">General Construction</Link></li>
-            <li><Link href="/services">Procurement &amp; Supplies</Link></li>
-            <li><Link href="/services">Agriculture &amp; Food Security</Link></li>
-            <li><Link href="/services">Architectural Design</Link></li>
-            <li><Link href="/services">Metal Works</Link></li>
-          </ul>
-        </div>
-
-        {/* Column 4 – Contact Information */}
-        <div>
-          <h4>Contact Information</h4>
-          <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: 1.8 }}>
-            📞 +211 922 627 256<br />
-            📞 +211 925 811 998<br />
-            ✉️ <a href="mailto:info@fiveinvestment-ss.com">info@fiveinvestment-ss.com</a><br />
-            🌐 <a href="https://www.fiveinvestment-ss.com" target="_blank">fiveinvestment-ss.com</a><br />
-            📍 Gudele 2, Shar Betri Road, Juba, South Sudan
-          </p>
-        </div>
-      </div>
-
-      <div className="footer-bottom">
-        &copy; 2026 Five Investment Limited. All rights reserved. &nbsp;|&nbsp; UN Number: 389997 &nbsp;|&nbsp; DU Number: 989994234<br />
-        <Link href="#">Privacy Policy</Link> &nbsp;·&nbsp; <Link href="#">Terms of Service</Link>
       </div>
     </footer>
   );

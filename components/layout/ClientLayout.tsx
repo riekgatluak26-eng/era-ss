@@ -12,7 +12,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const isAdmin = pathname.startsWith('/admin');
   const isPaused = pathname === '/paused';
 
-  // Admin authentication state (unchanged)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -25,6 +24,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         router.replace('/admin');
       }
     } else if (isAdmin && pathname === '/admin') {
+      // On login page, no auth check needed
       setIsAuthenticated(null);
     } else {
       setIsAuthenticated(null);
@@ -37,98 +37,121 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     router.push('/admin');
   };
 
-  // Admin pages (login page)
+  // Pause page – no header/footer
+  if (isPaused) {
+    return <>{children}</>;
+  }
+
+  // Admin login page
   if (isAdmin && pathname === '/admin') {
     return <>{children}</>;
   }
 
-  // Admin pages requiring authentication
+  // Admin pages: waiting for auth check
   if (isAdmin && isAuthenticated === null) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading…</div>;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        Loading…
+      </div>
+    );
   }
 
+  // Admin authenticated layout with sidebar
   if (isAdmin && isAuthenticated === true) {
     return (
       <div style={{ display: 'flex', minHeight: '100vh' }}>
+        {/* Sidebar */}
         <aside
           style={{
-            width: '250px',
-            background: '#0F172A',
-            color: 'white',
+            width: '260px',
+            background: '#1A1A1A',
+            color: '#fff',
             padding: '24px 16px',
             display: 'flex',
             flexDirection: 'column',
+            position: 'sticky',
+            top: 0,
+            height: '100vh',
           }}
         >
-          <h2
-            style={{
-              fontFamily: 'DM Serif Display',
-              fontSize: '20px',
-              marginBottom: '20px',
-              color: '#FBBF24',
-            }}
-          >
-            Admin Panel
-          </h2>
-          <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            {[
-              { href: '/admin/homepage', label: 'Homepage', icon: '🏠' },
-              { href: '/admin/about', label: 'About', icon: '📖' },
-              { href: '/admin/services', label: 'Services', icon: '⚙️' },
-              { href: '/admin/investments', label: 'Investments', icon: '💰' },
-              { href: '/admin/activities', label: 'Activities', icon: '📋' },
-              { href: '/admin/why-us', label: 'Why Us', icon: '⭐' },
-              { href: '/admin/legal', label: 'Legal', icon: '📜' },
-              { href: '/admin/contact', label: 'Contact', icon: '✉️' },
-            ].map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 16px',
-                  borderRadius: '8px',
-                  color: pathname === link.href ? '#FBBF24' : 'rgba(255,255,255,0.7)',
-                  backgroundColor: pathname === link.href ? 'rgba(251,191,36,0.2)' : 'transparent',
-                  fontWeight: pathname === link.href ? 700 : 400,
-                  textDecoration: 'none',
-                }}
-              >
-                <span>{link.icon}</span> {link.label}
-              </Link>
-            ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                background: '#C62828',
+                color: '#fff',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: '800',
+                fontSize: '1.3rem',
+              }}
+            >
+              E
+            </div>
+            <div>
+              <div style={{ fontWeight: '900', fontSize: '1.2rem', color: '#fff', lineHeight: 1 }}>ERA</div>
+              <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: '#F4A825', fontWeight: 700 }}>
+                EMPOWERING
+              </div>
+              <div style={{ fontSize: '0.5rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.6)' }}>
+                WITH EQUALITY
+              </div>
+            </div>
+          </div>
+
+          <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <Link
+              href="/admin/homepage"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '12px 16px',
+                borderRadius: '8px',
+                color: pathname === '/admin/homepage' ? '#F4A825' : 'rgba(255,255,255,0.75)',
+                background: pathname === '/admin/homepage' ? 'rgba(198,40,40,0.2)' : 'transparent',
+                fontWeight: pathname === '/admin/homepage' ? 700 : 500,
+                textDecoration: 'none',
+                transition: 'all 0.2s',
+              }}
+            >
+              <span>🏠</span> Homepage
+            </Link>
+            {/* Additional admin pages will be added later */}
           </nav>
+
           <button
             onClick={handleLogout}
             style={{
               marginTop: 'auto',
-              background: 'rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.08)',
               border: 'none',
-              color: 'white',
-              padding: '10px',
+              color: '#fff',
+              padding: '12px',
               borderRadius: '8px',
               cursor: 'pointer',
               fontWeight: 600,
+              transition: 'background 0.2s',
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(198,40,40,0.6)')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
           >
             🔒 Logout
           </button>
         </aside>
-        <main style={{ flex: 1, padding: '32px', background: '#f8fafc' }}>
+
+        {/* Main content area */}
+        <main style={{ flex: 1, padding: '32px', background: '#F9F9F9', minHeight: '100vh' }}>
           {children}
         </main>
       </div>
     );
   }
 
-  // Paused page – hide header and footer
-  if (isPaused) {
-    return <>{children}</>;
-  }
-
-  // Public pages (normal header/footer)
+  // Public pages
   return (
     <>
       <Header />

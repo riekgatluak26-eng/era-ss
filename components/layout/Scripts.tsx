@@ -1,62 +1,145 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 export default function Scripts() {
   const pathname = usePathname();
-  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    // ── Clean up previous observer and timer ──
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-    }
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
+    // ---------- NAVBAR SCROLL EFFECT ----------
+    const navbar = document.getElementById('navbar');
+    const topBar = document.getElementById('topBar');
+
+    if (navbar && topBar) {
+      const handleScroll = () => {
+        if (window.scrollY > 40) {
+          navbar.classList.add('scrolled');
+          topBar.classList.add('hidden');
+        } else {
+          navbar.classList.remove('scrolled');
+          topBar.classList.remove('hidden');
+        }
+      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
     }
 
-    // ── Reveal animations ──
-    const revealElements = document.querySelectorAll('.reveal');
+    // ---------- MOBILE MENU ----------
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileOverlay = document.getElementById('mobileOverlay');
 
-    const revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            revealObserver.unobserve(entry.target);
+    if (mobileToggle && mobileMenu && mobileOverlay) {
+      const openMenu = () => {
+        mobileMenu.classList.add('open');
+        mobileOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      };
+
+      const closeMenu = () => {
+        mobileMenu.classList.remove('open');
+        mobileOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+        document.querySelectorAll('.mobile-submenu.open').forEach((sub) => sub.classList.remove('open'));
+        document.querySelectorAll('.mobile-dropdown-btn.active').forEach((btn) => btn.classList.remove('active'));
+      };
+
+      mobileToggle.addEventListener('click', openMenu);
+      mobileOverlay.addEventListener('click', closeMenu);
+
+      document.querySelectorAll('.mobile-menu a').forEach((link) => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      document.querySelectorAll('.mobile-dropdown-btn').forEach((btn) => {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          const targetId = this.getAttribute('data-target');
+          const submenu = document.getElementById(targetId);
+          if (!submenu) return;
+
+          const isActive = this.classList.contains('active');
+
+          document.querySelectorAll('.mobile-submenu.open').forEach((sub) => {
+            if (sub.id !== targetId) sub.classList.remove('open');
+          });
+          document.querySelectorAll('.mobile-dropdown-btn.active').forEach((otherBtn) => {
+            if (otherBtn !== this) otherBtn.classList.remove('active');
+          });
+
+          if (!isActive) {
+            this.classList.add('active');
+            submenu.classList.add('open');
+          } else {
+            this.classList.remove('active');
+            submenu.classList.remove('open');
           }
         });
-      },
-      { threshold: 0.1 }
-    );
-
-    revealElements.forEach((el) => revealObserver.observe(el));
-    observerRef.current = revealObserver;
-
-    // Fallback: after 1.5s, force any still‑hidden reveals to become visible
-    fallbackTimerRef.current = setTimeout(() => {
-      document.querySelectorAll('.reveal:not(.visible)').forEach((el) => {
-        el.classList.add('visible');
       });
-    }, 1500);
+    }
 
-    // ── Smooth scroll for anchor links ──
+    // ---------- HERO SLIDER ----------
+    const slides = document.querySelectorAll('.slide');
+    const dotsContainer = document.getElementById('sliderDots');
+
+    if (slides.length > 0 && dotsContainer) {
+      let currentSlide = 0;
+      let slideInterval: ReturnType<typeof setInterval> | null = null;
+      const dots: HTMLSpanElement[] = [];
+
+      // Clear existing dots
+      dotsContainer.innerHTML = '';
+
+      slides.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => {
+          showSlide(i);
+          resetInterval();
+        });
+        dotsContainer.appendChild(dot);
+        dots.push(dot);
+      });
+
+      function showSlide(index: number) {
+        slides.forEach((s) => s.classList.remove('active'));
+        dots.forEach((d) => d.classList.remove('active'));
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+        currentSlide = index;
+      }
+
+      function nextSlide() {
+        const next = (currentSlide + 1) % slides.length;
+        showSlide(next);
+      }
+
+      function resetInterval() {
+        if (slideInterval) clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, 6000);
+      }
+
+      resetInterval();
+
+      // Cleanup on unmount (not strictly necessary but good)
+      return () => {
+        if (slideInterval) clearInterval(slideInterval);
+      };
+    }
+
+    // ---------- SMOOTH SCROLL FOR ANCHOR LINKS ----------
     const handleSmoothScroll = (e: Event) => {
       const anchor = e.currentTarget as HTMLAnchorElement;
-      const href = anchor.getAttribute('href');
-      if (href && href.startsWith('#')) {
+      const targetId = anchor.getAttribute('href');
+      if (!targetId || targetId === '#') return;
+      const target = document.querySelector(targetId);
+      if (target) {
         e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-          const navbar = document.getElementById('navbar');
-          const offset = navbar ? navbar.offsetHeight + 10 : 70;
-          window.scrollTo({
-            top: target.getBoundingClientRect().top + window.scrollY - offset,
-            behavior: 'smooth',
-          });
-        }
+        const navbarEl = document.getElementById('navbar');
+        const topBarEl = document.getElementById('topBar');
+        const offset = (navbarEl?.offsetHeight || 80) + (topBarEl?.offsetHeight || 40) + 16;
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
       }
     };
 
@@ -64,76 +147,52 @@ export default function Scripts() {
       anchor.addEventListener('click', handleSmoothScroll);
     });
 
-    // ── Contact form submit (via Web3Forms) ──
-    const contactForm = document.getElementById('contactForm') as HTMLFormElement | null;
-    if (contactForm) {
-      contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = contactForm.querySelector('button');
-        if (!btn) return;
+    // ---------- DESKTOP DROPDOWN TOUCH ENHANCEMENT ----------
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach((dropdown) => {
+      const toggle = dropdown.querySelector('.nav-link');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      if (!toggle || !menu) return;
 
-        const formData = new FormData(contactForm);
-        // Build the payload with all form fields + the Web3Forms access key
-        const payload = {
-          access_key: 'd044c4e8-a34b-4800-be0d-f56824ca4f13',
-          name: formData.get('name') as string,
-          phone: formData.get('phone') as string,
-          email: formData.get('email') as string,
-          organization: formData.get('organization') as string,
-          service: formData.get('service') as string,
-          subject: formData.get('subject') as string,
-          details: formData.get('details') as string,
-        };
-
-        const originalText = btn.textContent;
-        btn.textContent = '⏳ Sending...';
-        btn.style.background = 'var(--primary-dark)';
-
-        try {
-          const res = await fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-
-          if (res.ok) {
-            btn.textContent = '✓ Message Sent!';
-            btn.style.background = 'var(--primary-dark)';
-            setTimeout(() => {
-              btn.textContent = originalText;
-              btn.style.background = '';
-              contactForm.reset();
-            }, 2500);
-          } else {
-            btn.textContent = '✕ Failed – Try Again';
-            setTimeout(() => {
-              btn.textContent = originalText;
-              btn.style.background = '';
-            }, 2500);
-          }
-        } catch (err) {
-          btn.textContent = '✕ Network Error';
-          setTimeout(() => {
-            btn.textContent = originalText;
-            btn.style.background = '';
-          }, 2500);
+      toggle.addEventListener('click', function (e) {
+        if (window.innerWidth <= 1024) return;
+        const isVisible = window.getComputedStyle(menu).opacity === '1';
+        if (!isVisible) {
+          e.preventDefault();
+          e.stopPropagation();
+          menu.style.opacity = '1';
+          menu.style.visibility = 'visible';
+          menu.style.transform = 'translateY(0)';
+          menu.style.pointerEvents = 'auto';
         }
       });
-    }
+    });
 
-    // Cleanup on unmount or before next run
+    document.addEventListener('click', function (e) {
+      if (window.innerWidth <= 1024) return;
+      dropdowns.forEach((dropdown) => {
+        if (!dropdown.contains(e.target as Node)) {
+          const menu = dropdown.querySelector('.dropdown-menu');
+          if (menu) {
+            menu.style.opacity = '';
+            menu.style.visibility = '';
+            menu.style.transform = '';
+            menu.style.pointerEvents = '';
+          }
+        }
+      });
+    });
+
+    // Cleanup event listeners on route change
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-      if (fallbackTimerRef.current) {
-        clearTimeout(fallbackTimerRef.current);
+      if (navbar && topBar) {
+        window.removeEventListener('scroll', () => {});
       }
       document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.removeEventListener('click', handleSmoothScroll);
       });
     };
-  }, [pathname]); // <-- Re‑run on every route change
+  }, [pathname]);
 
   return null;
 }
