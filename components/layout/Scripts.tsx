@@ -8,8 +8,8 @@ export default function Scripts() {
 
   useEffect(() => {
     // ---------- NAVBAR SCROLL EFFECT ----------
-    const navbar = document.getElementById('navbar');
-    const topBar = document.getElementById('topBar');
+    const navbar = document.getElementById('navbar') as HTMLElement | null;
+    const topBar = document.getElementById('topBar') as HTMLElement | null;
 
     if (navbar && topBar) {
       const handleScroll = () => {
@@ -25,9 +25,9 @@ export default function Scripts() {
     }
 
     // ---------- MOBILE MENU ----------
-    const mobileToggle = document.getElementById('mobileToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileOverlay = document.getElementById('mobileOverlay');
+    const mobileToggle = document.getElementById('mobileToggle') as HTMLElement | null;
+    const mobileMenu = document.getElementById('mobileMenu') as HTMLElement | null;
+    const mobileOverlay = document.getElementById('mobileOverlay') as HTMLElement | null;
 
     if (mobileToggle && mobileMenu && mobileOverlay) {
       const openMenu = () => {
@@ -52,26 +52,26 @@ export default function Scripts() {
       });
 
       document.querySelectorAll('.mobile-dropdown-btn').forEach((btn) => {
-        btn.addEventListener('click', function (e) {
+        btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          const targetId = this.getAttribute('data-target');
-          const submenu = document.getElementById(targetId);
+          const targetId = (btn as HTMLElement).getAttribute('data-target');
+          const submenu = document.getElementById(targetId || '');
           if (!submenu) return;
 
-          const isActive = this.classList.contains('active');
+          const isActive = btn.classList.contains('active');
 
           document.querySelectorAll('.mobile-submenu.open').forEach((sub) => {
             if (sub.id !== targetId) sub.classList.remove('open');
           });
           document.querySelectorAll('.mobile-dropdown-btn.active').forEach((otherBtn) => {
-            if (otherBtn !== this) otherBtn.classList.remove('active');
+            if (otherBtn !== btn) otherBtn.classList.remove('active');
           });
 
           if (!isActive) {
-            this.classList.add('active');
+            btn.classList.add('active');
             submenu.classList.add('open');
           } else {
-            this.classList.remove('active');
+            btn.classList.remove('active');
             submenu.classList.remove('open');
           }
         });
@@ -80,14 +80,13 @@ export default function Scripts() {
 
     // ---------- HERO SLIDER ----------
     const slides = document.querySelectorAll('.slide');
-    const dotsContainer = document.getElementById('sliderDots');
+    const dotsContainer = document.getElementById('sliderDots') as HTMLElement | null;
 
     if (slides.length > 0 && dotsContainer) {
       let currentSlide = 0;
       let slideInterval: ReturnType<typeof setInterval> | null = null;
       const dots: HTMLSpanElement[] = [];
 
-      // Clear existing dots
       dotsContainer.innerHTML = '';
 
       slides.forEach((_, i) => {
@@ -121,7 +120,7 @@ export default function Scripts() {
 
       resetInterval();
 
-      // Cleanup on unmount (not strictly necessary but good)
+      // Cleanup
       return () => {
         if (slideInterval) clearInterval(slideInterval);
       };
@@ -132,11 +131,11 @@ export default function Scripts() {
       const anchor = e.currentTarget as HTMLAnchorElement;
       const targetId = anchor.getAttribute('href');
       if (!targetId || targetId === '#') return;
-      const target = document.querySelector(targetId);
+      const target = document.querySelector(targetId) as HTMLElement | null;
       if (target) {
         e.preventDefault();
-        const navbarEl = document.getElementById('navbar');
-        const topBarEl = document.getElementById('topBar');
+        const navbarEl = document.getElementById('navbar') as HTMLElement | null;
+        const topBarEl = document.getElementById('topBar') as HTMLElement | null;
         const offset = (navbarEl?.offsetHeight || 80) + (topBarEl?.offsetHeight || 40) + 16;
         const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetPosition, behavior: 'smooth' });
@@ -150,13 +149,13 @@ export default function Scripts() {
     // ---------- DESKTOP DROPDOWN TOUCH ENHANCEMENT ----------
     const dropdowns = document.querySelectorAll('.dropdown');
     dropdowns.forEach((dropdown) => {
-      const toggle = dropdown.querySelector('.nav-link');
-      const menu = dropdown.querySelector('.dropdown-menu');
+      const toggle = dropdown.querySelector('.nav-link') as HTMLElement | null;
+      const menu = dropdown.querySelector('.dropdown-menu') as HTMLElement | null;
       if (!toggle || !menu) return;
 
-      toggle.addEventListener('click', function (e) {
+      toggle.addEventListener('click', (e) => {
         if (window.innerWidth <= 1024) return;
-        const isVisible = window.getComputedStyle(menu).opacity === '1';
+        const isVisible = menu.style.opacity === '1';
         if (!isVisible) {
           e.preventDefault();
           e.stopPropagation();
@@ -168,11 +167,11 @@ export default function Scripts() {
       });
     });
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', (e) => {
       if (window.innerWidth <= 1024) return;
       dropdowns.forEach((dropdown) => {
         if (!dropdown.contains(e.target as Node)) {
-          const menu = dropdown.querySelector('.dropdown-menu');
+          const menu = dropdown.querySelector('.dropdown-menu') as HTMLElement | null;
           if (menu) {
             menu.style.opacity = '';
             menu.style.visibility = '';
